@@ -57,7 +57,7 @@ const loginUser = async (req, res) => {
             samsite: 'strict',
             path: '/',
         })
-        return res.status(200).json(...newReponse, refresh_token);
+        return res.status(200).json(newReponse);
     } catch (e) {
         res.status(500).json({ status: 'ERR', message: e.message });
     }
