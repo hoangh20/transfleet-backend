@@ -55,8 +55,9 @@ const loginUser = async (req, res) => {
             httpOnly: true,
             secure: false,
             samsite: 'strict',
+            path: '/',
         })
-        return res.status(200).json(newReponse);
+        return res.status(200).json(...newReponse, refresh_token);
     } catch (e) {
         res.status(500).json({ status: 'ERR', message: e.message });
     }
@@ -108,7 +109,7 @@ const detailUser = async (req, res) => {
 
 const refreshToken = async (req, res) => {
     try {
-        const token = req.cookies.refresh_token
+        let token = req.headers.token.split(' ')[1];
 
         if (!token) {
             return res.status(400).json({ message: 'The token is required' });
