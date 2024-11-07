@@ -52,10 +52,10 @@ const deleteVehicle = async (req, res) => {
 };
 const updateVehicle = async (req, res) => {
     try {
-        const { id } = req.params; // Lấy ID từ tham số URL
+        const { id } = req.params; 
         const { licensePlate, brand, imageUrl,technicalSpecifications,address,depreciationRate, type, status, purchasePrice, location } = req.body;
 
-        const typeOptions = [0, 1]; // 0: Xe đầu kéo, 1: Rơ moóc
+        const typeOptions = [0, 1]; 
         const statusOptions = [0, 1, 2, 3]; // 0: Đang rảnh, 1: Đang thực hiện chuyến, 2: Bảo dưỡng, 3: Không còn sử dụng
 
         // Validate input fields
@@ -89,16 +89,19 @@ const updateVehicle = async (req, res) => {
 
 const getAllVehicles = async (req, res) => {
     try {
-        const page = parseInt(req.query.page) || 1; 
-        const limit = parseInt(req.query.limit) || 10; // Mặc định là 10 xe mỗi trang
-        const skip = (page - 1) * limit; // Tính toán số lượng xe cần bỏ qua
-
-        const response = await VehicleService.getAllVehicles(skip, limit);
-        return res.status(200).json(response);
+      // Lấy các tham số từ query
+      const page = parseInt(req.query.page) || 1;
+      const limit = parseInt(req.query.limit) || 8; 
+  
+      const response = await VehicleService.getAllVehicles(page, limit);
+  
+      return res.status(200).json(response);
     } catch (e) {
-        res.status(500).json({ message: e.message });
+      // Xử lý lỗi nếu có
+      res.status(500).json({ message: e.message });
     }
-};
+  };
+  
 const getDetail = async (req, res) => {
     try {
         const { id } = req.params; // Lấy ID từ tham số URL

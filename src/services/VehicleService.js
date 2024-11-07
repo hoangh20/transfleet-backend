@@ -89,24 +89,33 @@ const updateVehicle = (id, updatedData) => {
         }
     });
 };
-const getAllVehicles = (skip, limit) => {
+const getAllVehicles = (page = 1, limit = 8) => {
     return new Promise(async (resolve, reject) => {
-        try {
-            const totalVehicles = await Vehicle.countDocuments(); // Đếm tổng số xe
-            const vehicles = await Vehicle.find().skip(skip).limit(limit); // Lấy danh sách xe với phân trang
+      try {
+        const totalVehicles = await Vehicle.countDocuments();
+  
+        const totalPages = Math.ceil(totalVehicles / limit);
+  
+        const vehicles = await Vehicle.find()
+          .skip((page - 1) * limit) 
+          .limit(limit); 
+  
 
-            resolve({
-                status: 'OK',
-                message: 'Vehicles retrieved successfully',
-                data: vehicles,
-                total: totalVehicles,
-                page: Math.ceil(totalVehicles / limit) // Tổng số trang
-            });
-        } catch (error) {
-            reject(error);
-        }
+        resolve({
+          status: 'OK',
+          message: 'Vehicles retrieved successfully',
+          data: vehicles,
+          total: totalVehicles, // Tổng số xe
+          currentPage: page, // Trang hiện tại
+          totalPages, // Tổng số trang
+        });
+      } catch (error) {
+        reject(error); // Trả về lỗi nếu có
+      }
     });
-};
+  };
+  
+
 const getDetail = (id) => {
     return new Promise(async (resolve, reject) => {
         try {
