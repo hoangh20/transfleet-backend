@@ -109,18 +109,26 @@ const detailUser = async (req, res) => {
 
 const refreshToken = async (req, res) => {
     try {
-        let token = req.headers.token.split(' ')[1];
+        const token = req.cookies.refresh_token;
 
         if (!token) {
-            return res.status(400).json({ message: 'The token is required' });
+            return res.status(400).json({ message: 'Refresh token is required' });
         }
 
         const response = await JwtService.refreshTokenJWTService(token);
+
         return res.status(200).json(response);
     } catch (e) {
-        res.status(500).json({ message: e.message });
+        if (e.name === 'TokenExpiredError') {
+            return res.status(401).json({ message: 'Refresh token has expired' });
+        } else if (e.name === 'JsonWebTokenError') {
+            return res.status(401).json({ message: 'Invalid refresh token' });
+        } else {
+            return res.status(500).json({ message: 'Internal server error' });
+        }
     }
 };
+
 const signoutUser = async (req, res) => {
     try {
         res.clearCookie('refresh_token')
